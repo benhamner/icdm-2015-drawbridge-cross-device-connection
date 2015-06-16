@@ -2,7 +2,7 @@
 
 CREATE TABLE cookies (
     drawbridge_handle,
-    cookie_id,
+    cookie_id PRIMARY KEY,
     computer_os_type,
     browser_version,
     country,
@@ -15,7 +15,7 @@ CREATE TABLE cookies (
 
 CREATE TABLE devices (
     drawbridge_handle,
-    device_id,
+    device_id PRIMARY KEY,
     device_type,
     device_os,
     country,
@@ -26,7 +26,7 @@ CREATE TABLE devices (
     anonymous_6,
     anonymous_7);
 
-CREATE TABLE ips (
+CREATE TABLE id_ips (
     device_or_cookie_id,
     device_or_cookie_indicator,
     ip,
@@ -37,14 +37,14 @@ CREATE TABLE ips (
     idxip_anonymous_c4,
     idxip_anonymous_c5);
 
-CREATE TABLE properties (
+CREATE TABLE id_properties (
     device_or_cookie_id,
     device_or_cookie_indicator,
     property_id,
     unique_days_seeing_property_on_device_or_cookie_id);
 
-CREATE TABLE ip_agg (
-    ip_address,
+CREATE TABLE ips (
+    ip_address PRIMARY KEY,
     is_cellular_ip,
     ip_total_freq,
     ip_anonymous_c0,
@@ -58,7 +58,22 @@ CREATE TABLE property_categories (
 .import "working/cookie_all_basic.csv" cookies
 .import "working/dev_train_basic.csv" devices
 .import "working/dev_test_basic.csv" devices
-.import "working/id_all_ip_corrected.csv" ips
-.import "working/id_all_property_corrected.csv" properties
-.import "working/ipagg_all.csv" ip_agg
+.import "working/id_all_ip_corrected.csv" id_ips
+.import "working/id_all_property_corrected.csv" id_properties
+.import "working/ipagg_all.csv" ips
 .import "working/property_category_corrected.csv" property_categories
+
+CREATE INDEX cookies_drawbridge_handle_ix ON cookies (drawbridge_handle);
+
+CREATE INDEX devices_drawbridge_handle_ix ON devices (drawbridge_handle);
+
+CREATE INDEX id_ips_device_or_cookie_id_ix ON id_ips (device_or_cookie_id);
+CREATE INDEX id_ips_device_or_cookie_indicator_ix ON id_ips (device_or_cookie_indicator);
+CREATE INDEX id_ips_ip ON id_ips (ip);
+
+CREATE INDEX id_properties_device_or_cookie_id_ix ON id_properties (device_or_cookie_id);
+CREATE INDEX id_properties_device_or_cookie_indicator_ix ON id_properties (device_or_cookie_indicator);
+CREATE INDEX id_properties_property_id_ix ON id_properties (property_id);
+
+CREATE INDEX property_categories_property_id_ix ON property_categories (property_id);
+CREATE INDEX property_categories_category_id_ix ON property_categories (category_id);
